@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="db.reunionesModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Empleados">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Departamento" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CorreoElectronico" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Reservas">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IDSala" Type="int" Nullable="false" />
+          <Property Name="IDEmpleado" Type="int" Nullable="false" />
+          <Property Name="Fecha" Type="date" Nullable="false" />
+          <Property Name="HoraInicio" Type="time" Precision="7" Nullable="false" />
+          <Property Name="HoraFin" Type="time" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Salas">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Capacidad" Type="int" Nullable="false" />
+          <Property Name="Ubicacion" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Reserva_Empleado">
+          <End Role="Empleados" Type="Self.Empleados" Multiplicity="1" />
+          <End Role="Reservas" Type="Self.Reservas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empleados">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Reservas">
+              <PropertyRef Name="IDEmpleado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reserva_Sala">
+          <End Role="Salas" Type="Self.Salas" Multiplicity="1" />
+          <End Role="Reservas" Type="Self.Reservas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Salas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Reservas">
+              <PropertyRef Name="IDSala" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="dbreunionesModelStoreContainer">
+          <EntitySet Name="Empleados" EntityType="Self.Empleados" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Reservas" EntityType="Self.Reservas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Salas" EntityType="Self.Salas" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Reserva_Empleado" Association="Self.FK_Reserva_Empleado">
+            <End Role="Empleados" EntitySet="Empleados" />
+            <End Role="Reservas" EntitySet="Reservas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reserva_Sala" Association="Self.FK_Reserva_Sala">
+            <End Role="Salas" EntitySet="Salas" />
+            <End Role="Reservas" EntitySet="Reservas" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="db.reunionesModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Empleado">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Departamento" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CorreoElectronico" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Reservas" Relationship="Self.FK_Reserva_Empleado" FromRole="Empleados" ToRole="Reservas" />
+        </EntityType>
+        <EntityType Name="Reserva">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IDSala" Type="Int32" Nullable="false" />
+          <Property Name="IDEmpleado" Type="Int32" Nullable="false" />
+          <Property Name="Fecha" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="HoraInicio" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="HoraFin" Type="Time" Nullable="false" Precision="7" />
+          <NavigationProperty Name="Empleado" Relationship="Self.FK_Reserva_Empleado" FromRole="Reservas" ToRole="Empleados" />
+          <NavigationProperty Name="Sala" Relationship="Self.FK_Reserva_Sala" FromRole="Reservas" ToRole="Salas" />
+        </EntityType>
+        <EntityType Name="Sala">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Capacidad" Type="Int32" Nullable="false" />
+          <Property Name="Ubicacion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Reservas" Relationship="Self.FK_Reserva_Sala" FromRole="Salas" ToRole="Reservas" />
+        </EntityType>
+        <Association Name="FK_Reserva_Empleado">
+          <End Role="Empleados" Type="Self.Empleado" Multiplicity="1" />
+          <End Role="Reservas" Type="Self.Reserva" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empleados">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Reservas">
+              <PropertyRef Name="IDEmpleado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reserva_Sala">
+          <End Role="Salas" Type="Self.Sala" Multiplicity="1" />
+          <End Role="Reservas" Type="Self.Reserva" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Salas">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Reservas">
+              <PropertyRef Name="IDSala" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DBReunionesEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Empleados" EntityType="Self.Empleado" />
+          <EntitySet Name="Reservas" EntityType="Self.Reserva" />
+          <EntitySet Name="Salas" EntityType="Self.Sala" />
+          <AssociationSet Name="FK_Reserva_Empleado" Association="Self.FK_Reserva_Empleado">
+            <End Role="Empleados" EntitySet="Empleados" />
+            <End Role="Reservas" EntitySet="Reservas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reserva_Sala" Association="Self.FK_Reserva_Sala">
+            <End Role="Salas" EntitySet="Salas" />
+            <End Role="Reservas" EntitySet="Reservas" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="dbreunionesModelStoreContainer" CdmEntityContainer="DBReunionesEntities">
+          <EntitySetMapping Name="Empleados">
+            <EntityTypeMapping TypeName="db.reunionesModel.Empleado">
+              <MappingFragment StoreEntitySet="Empleados">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Departamento" ColumnName="Departamento" />
+                <ScalarProperty Name="CorreoElectronico" ColumnName="CorreoElectronico" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Reservas">
+            <EntityTypeMapping TypeName="db.reunionesModel.Reserva">
+              <MappingFragment StoreEntitySet="Reservas">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="IDSala" ColumnName="IDSala" />
+                <ScalarProperty Name="IDEmpleado" ColumnName="IDEmpleado" />
+                <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+                <ScalarProperty Name="HoraInicio" ColumnName="HoraInicio" />
+                <ScalarProperty Name="HoraFin" ColumnName="HoraFin" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Salas">
+            <EntityTypeMapping TypeName="db.reunionesModel.Sala">
+              <MappingFragment StoreEntitySet="Salas">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Capacidad" ColumnName="Capacidad" />
+                <ScalarProperty Name="Ubicacion" ColumnName="Ubicacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
